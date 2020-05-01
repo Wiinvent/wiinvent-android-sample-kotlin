@@ -84,11 +84,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeOverlays() {
         val overlayData = OverlayData.Builder().channelId(SAMPLE_CHANNEL_ID).streamId(
-            SAMPLE_STREAM_ID).build()
+            SAMPLE_STREAM_ID)
+            .debug(true)
+            .previewMode(true)
+            .viewerId("your viewer id")
+            .thirdPartyToken("your token")
+            .build()
 
         overlayManager = OverlayManager(
             this,
-            R.id.naco_overlay_view,
+            R.id.wisdk_overlay_view,
             overlayData
         )
         overlayManager?.addOverlayListener(object: DefaultOverlayEventListener {

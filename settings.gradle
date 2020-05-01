@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='wiinvent-sdk-android-sample'
+rootProject.name='wiinvent-sdk-android-sample-kotlin'
