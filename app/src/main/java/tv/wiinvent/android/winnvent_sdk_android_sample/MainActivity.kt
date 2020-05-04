@@ -2,22 +2,22 @@ package tv.wiinvent.android.winnvent_sdk_android_sample
 
 import android.content.ComponentName
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -26,6 +26,7 @@ import tv.wiinvent.wiinventsdk.interfaces.DefaultOverlayEventListener
 import tv.wiinvent.wiinventsdk.interfaces.PlayerChangeListener
 import tv.wiinvent.wiinventsdk.models.ConfigData
 import tv.wiinvent.wiinventsdk.models.OverlayData
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,10 +63,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        val trackSelector = DefaultTrackSelector()
+        concatenatingMediaSource = ConcatenatingMediaSource();
         val componentName = ComponentName(baseContext, "Exo")
 
-        exoplayer = ExoPlayerFactory.newSimpleInstance(baseContext, trackSelector)
+        exoplayer = SimpleExoPlayer.Builder(baseContext).build()
         exoplayerView?.player = exoplayer
         exoplayerView?.useController = true
 
@@ -78,8 +79,6 @@ class MainActivity : AppCompatActivity() {
         mediaSession = MediaSessionCompat(baseContext, "ExoPlayer", componentName, null)
         mediaSession?.setPlaybackState(playbackStateBuilder?.build())
         mediaSession?.isActive = true
-
-        concatenatingMediaSource = ConcatenatingMediaSource()
     }
 
     private fun initializeOverlays() {
@@ -87,8 +86,9 @@ class MainActivity : AppCompatActivity() {
             SAMPLE_STREAM_ID)
             .debug(true)
             .previewMode(true)
-            .viewerId("your viewer id")
-            .thirdPartyToken("your token")
+            .viewerId("abcasd123qsd")
+            .env(OverlayData.Environment.DEV)
+            .deviceType(OverlayData.DeviceType.PHONE)
             .build()
 
         overlayManager = OverlayManager(
@@ -98,14 +98,16 @@ class MainActivity : AppCompatActivity() {
         )
         overlayManager?.addOverlayListener(object: DefaultOverlayEventListener {
             override fun onConfigReady(config: ConfigData) {
+
+
                 this@MainActivity.runOnUiThread {
                     for (source in config.getStreamSources()) {
+                        Log.d(TAG, "============onConfigReady: " + source?.url ?: "")
                         val mediaSource = buildMediaSource(source?.url ?: "")
-                        concatenatingMediaSource?.addMediaSource(mediaSource)
-                    }
+                        exoplayer?.playWhenReady = true
+                        exoplayer?.prepare(mediaSource)
 
-                    exoplayer?.playWhenReady = true
-                    exoplayer?.prepare(concatenatingMediaSource)
+                    }
                 }
             }
 
@@ -149,13 +151,6 @@ class MainActivity : AppCompatActivity() {
                 overlayManager?.setVisible(playWhenReady && playbackState == Player.STATE_READY)
             }
 
-            override fun onPlayerError(error: ExoPlaybackException?) {
-
-                if(error?.type == ExoPlaybackException.TYPE_SOURCE) {
-                    playNextMediaSource()
-                }
-            }
-
         })
 
     }
@@ -176,9 +171,7 @@ class MainActivity : AppCompatActivity() {
             C.TYPE_SS -> SsMediaSource
                 .Factory(dataSourceFactory)
                 .createMediaSource(uri)
-            C.TYPE_OTHER -> ExtractorMediaSource
-                .Factory(dataSourceFactory)
-                .setExtractorsFactory(DefaultExtractorsFactory())
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(uri)
             else -> throw IllegalStateException("Unsupported type :: $type")
         }
@@ -192,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         }
         concatenatingMediaSource?.let {
             exoplayer?.playWhenReady = true
-            exoplayer?.prepare(concatenatingMediaSource, true, true)
+          //  exoplayer?.prepare(concatenatingMediaSource, true, true)
         }
     }
 
