@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
-        val SAMPLE_CHANNEL_ID = "1"
-        val SAMPLE_STREAM_ID = "1"
+        val SAMPLE_CHANNEL_ID = "27"
+        val SAMPLE_STREAM_ID = "57"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -109,6 +109,20 @@ class MainActivity : AppCompatActivity() {
 
                     }
                 }
+            }
+
+            override fun onVoted(
+                userId: String,
+                channelId: String,
+                streamId: String?,
+                entryId: String,
+                numPredictSame: Int
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onUserPurchase(userId: String, productId: Int) {
+                TODO("Not yet implemented")
             }
 
             override fun onVisibilityChange(hasVisibleOverlays: Boolean, numVisibleOverlays: Int) {
