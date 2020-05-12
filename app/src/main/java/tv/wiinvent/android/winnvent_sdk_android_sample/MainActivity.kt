@@ -111,42 +111,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onVoted(
-                userId: String,
-                channelId: String,
-                streamId: String?,
-                entryId: String,
-                numPredictSame: Int
-            ) {
+            override fun onVoted(userId: String, channelId: String, streamId: String?, entryId: String, numPredictSame: Int) {
                 TODO("Not yet implemented")
             }
 
             override fun onUserPurchase(userId: String, productId: Int) {
                 TODO("Not yet implemented")
-            }
-
-            override fun onVisibilityChange(hasVisibleOverlays: Boolean, numVisibleOverlays: Int) {
-                // Letting you know there are overlays on the screen, and how many.
-            }
-
-            override fun onWebViewBrowserClose() {
-
-            }
-
-            override fun onWebViewBrowserContentVisible(isVisible: Boolean) {
-
-            }
-
-            override fun onWebViewBrowserOpen() {
-
-            }
-
-            override fun dispatchKeyEvent(keyCode: Int, ev: KeyEvent): Boolean {
-                return false
-            }
-
-            override fun onUserGesture(interactsWithOverlay: Boolean, ev: MotionEvent?) {
-
             }
         })
 
