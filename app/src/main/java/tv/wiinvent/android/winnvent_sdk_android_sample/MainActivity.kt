@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
+        val SAMPLE_ACCOUNT_ID = "1"
         val SAMPLE_CHANNEL_ID = "27"
         val SAMPLE_STREAM_ID = "57"
     }
@@ -82,8 +83,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeOverlays() {
-        val overlayData = OverlayData.Builder().channelId(SAMPLE_CHANNEL_ID).streamId(
-            SAMPLE_STREAM_ID)
+        val overlayData = OverlayData.Builder()
+            .mappingType(OverlayData.MappingType.THIRDPARTY)
+            .accountId(SAMPLE_ACCOUNT_ID)
+            .channelId(SAMPLE_CHANNEL_ID)
+            .streamId(SAMPLE_STREAM_ID)
             .debug(true)
             .previewMode(true)
             .viewerId("abcasd123qsd")
