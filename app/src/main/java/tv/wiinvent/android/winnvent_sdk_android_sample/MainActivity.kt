@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
         val SAMPLE_ACCOUNT_ID = "1"
-        val SAMPLE_CHANNEL_ID = "27"
-        val SAMPLE_STREAM_ID = "57"
+        val SAMPLE_CHANNEL_ID = "1"
+        val SAMPLE_STREAM_ID = "1"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -89,8 +89,6 @@ class MainActivity : AppCompatActivity() {
             .channelId(SAMPLE_CHANNEL_ID)
             .streamId(SAMPLE_STREAM_ID)
             .debug(true)
-            .previewMode(true)
-            .viewerId("abcasd123qsd")
             .env(OverlayData.Environment.DEV)
             .deviceType(OverlayData.DeviceType.PHONE)
             .build()
