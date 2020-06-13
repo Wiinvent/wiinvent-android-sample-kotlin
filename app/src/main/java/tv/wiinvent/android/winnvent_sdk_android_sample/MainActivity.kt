@@ -28,18 +28,18 @@ import com.google.android.exoplayer2.util.Util
 import tv.wiinvent.wiinventsdk.OverlayManager
 import tv.wiinvent.wiinventsdk.interfaces.DefaultOverlayEventListener
 import tv.wiinvent.wiinventsdk.interfaces.PlayerChangeListener
+import tv.wiinvent.wiinventsdk.interfaces.UserActionListener
 import tv.wiinvent.wiinventsdk.models.ConfigData
 import tv.wiinvent.wiinventsdk.models.OverlayData
 import tv.wiinvent.wiinventsdk.ui.OverlayView
-
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
-        val SAMPLE_ACCOUNT_ID = "1"
-        val SAMPLE_CHANNEL_ID = "27"
-        val SAMPLE_STREAM_ID = "57"
+        val SAMPLE_ACCOUNT_ID = "81"
+        val SAMPLE_CHANNEL_ID = "34"
+        val SAMPLE_STREAM_ID = "154"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
                             R.drawable.ic_fullscreen_close
                         )
                     )
+
                     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
@@ -150,12 +151,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeOverlays() {
         val overlayData = OverlayData.Builder()
-            .mappingType(OverlayData.MappingType.WI)
-//            .accountId(SAMPLE_ACCOUNT_ID)
+            .mappingType(OverlayData.MappingType.THIRDPARTY)
+            .accountId(SAMPLE_ACCOUNT_ID)
             .channelId(SAMPLE_CHANNEL_ID)
             .streamId(SAMPLE_STREAM_ID)
+            .thirdPartyToken("025e2286d574f18e362bcb1f54dda8124eb6ceba")
             .debug(true)
-            .env(OverlayData.Environment.DEV)
+            .env(OverlayData.Environment.PRODUCTION)
             .deviceType(OverlayData.DeviceType.PHONE)
             .build()
 
@@ -164,6 +166,35 @@ class MainActivity : AppCompatActivity() {
             R.id.wisdk_overlay_view,
             overlayData
         )
+
+        overlayManager?.addUserPlayerListener(object: UserActionListener{
+            override fun onTokenExpire() {
+
+                Log.d(TAG, "--------onTokenExpire----- ")
+            }
+
+            override fun onUserPurchase(userId: String, productId: String) {
+                Log.d(TAG, "--------onUserPurchase: " + productId)
+
+                overlayManager?.onUserPurchaseSuccess("41121610f8f6103481f37920bc4cb1f04cd63389", "VIETTELTV_PES")
+            }
+
+            override fun onVoted(
+                userId: String,
+                channelId: String,
+                streamId: String?,
+                entryId: String,
+                entryName: String,
+                eventName: String,
+                packageName: String,
+                numPredictSame: Int
+            ) {
+
+                Log.d(TAG, "--------onVoted")
+            }
+
+        })
+
         overlayManager?.addOverlayListener(object: DefaultOverlayEventListener {
             override fun onConfigReady(config: ConfigData) {
 
@@ -180,20 +211,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTimeout() {
-                TODO("Not yet implemented")
+                Log.d(TAG, "-------------------onTimeout")
             }
 
             override fun onLoadError() {
-                TODO("Not yet implemented")
+                Log.d(TAG, "-------------------onLoadError")
             }
 
             override fun onWebViewBrowserClose() {
-                TODO("Not yet implemented")
-
+                Log.d(TAG, "-------------------onWebViewBrowserClose")
             }
 
             override fun onWebViewBrowserContentVisible(isVisible: Boolean) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onWebViewBrowserOpen() {
