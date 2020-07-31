@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
         val SAMPLE_ACCOUNT_ID = "81"
-        val SAMPLE_CHANNEL_ID = "34"
-        val SAMPLE_STREAM_ID = "154"
+        val SAMPLE_CHANNEL_ID = "300"
+        val SAMPLE_STREAM_ID = "300"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -155,9 +155,9 @@ class MainActivity : AppCompatActivity() {
             .accountId(SAMPLE_ACCOUNT_ID)
             .channelId(SAMPLE_CHANNEL_ID)
             .streamId(SAMPLE_STREAM_ID)
-            .thirdPartyToken("025e2286d574f18e362bcb1f54dda8124eb6ceba")
+            .thirdPartyToken("99")
             .debug(true)
-            .env(OverlayData.Environment.PRODUCTION)
+            .env(OverlayData.Environment.DEV)
             .deviceType(OverlayData.DeviceType.PHONE)
             .build()
 
