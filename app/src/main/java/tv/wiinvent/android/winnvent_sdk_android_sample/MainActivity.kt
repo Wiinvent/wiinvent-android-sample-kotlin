@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
-        val SAMPLE_ACCOUNT_ID = "81"
-        val SAMPLE_CHANNEL_ID = "300"
-        val SAMPLE_STREAM_ID = "300"
+        val SAMPLE_ACCOUNT_ID = "87"
+        val SAMPLE_CHANNEL_ID = "100"
+        val SAMPLE_STREAM_ID = "2"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -73,6 +73,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
+        val CONTENT_URL = "https://wiinvent.tv/videos/donationdemo.mp4"
+
         concatenatingMediaSource = ConcatenatingMediaSource();
         val componentName = ComponentName(baseContext, "Exo")
 
@@ -90,6 +92,9 @@ class MainActivity : AppCompatActivity() {
         mediaSession?.setPlaybackState(playbackStateBuilder?.build())
         mediaSession?.isActive = true
 
+        val mediaSource = buildMediaSource(CONTENT_URL)
+        exoplayer?.playWhenReady = true
+        exoplayer?.prepare(mediaSource)
 
         fullscreenButton?.setOnClickListener(object: View.OnClickListener{
             override fun onClick(v: View?) {
@@ -155,10 +160,11 @@ class MainActivity : AppCompatActivity() {
             .accountId(SAMPLE_ACCOUNT_ID)
             .channelId(SAMPLE_CHANNEL_ID)
             .streamId(SAMPLE_STREAM_ID)
-            .thirdPartyToken("99")
+            .thirdPartyToken("fa9o7tvuNUUyu8piClEA0+kmAuZg4SFeEsMKMfSeCfhN7eaInptFERC6YJxdepILNJs914fZ1MIMiwDCsUQrSw%3D%3D")
             .debug(true)
-            .env(OverlayData.Environment.DEV)
+            .env(OverlayData.Environment.PRODUCTION)
             .deviceType(OverlayData.DeviceType.PHONE)
+                .contentType(OverlayData.ContentType.LIVESTREAM)
             .build()
 
         overlayManager = OverlayManager(
@@ -200,13 +206,13 @@ class MainActivity : AppCompatActivity() {
 
 
                 this@MainActivity.runOnUiThread {
-                    for (source in config.getStreamSources()) {
-                        Log.d(TAG, "============onConfigReady: " + source?.url ?: "")
-                        val mediaSource = buildMediaSource(source?.url ?: "")
-                        exoplayer?.playWhenReady = true
-                        exoplayer?.prepare(mediaSource)
-
-                    }
+//                    for (source in config.getStreamSources()) {
+//                        Log.d(TAG, "============onConfigReady: " + source?.url ?: "")
+//                        val mediaSource = buildMediaSource(source?.url ?: "")
+//                        exoplayer?.playWhenReady = true
+//                        exoplayer?.prepare(mediaSource)
+//
+//                    }
                 }
             }
 
