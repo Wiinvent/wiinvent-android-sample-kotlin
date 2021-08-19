@@ -37,9 +37,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
-        val SAMPLE_ACCOUNT_ID = "87"
-        val SAMPLE_CHANNEL_ID = "100"
-        val SAMPLE_STREAM_ID = "2"
+        val SAMPLE_ACCOUNT_ID = "13"
+        val SAMPLE_TOKEN = "5000"
+        val SAMPLE_CHANNEL_ID = "107578015"
+        val SAMPLE_STREAM_ID = "957"
     }
 
     private var exoplayerView: PlayerView? = null
