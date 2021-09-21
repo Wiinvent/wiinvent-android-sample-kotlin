@@ -36,11 +36,11 @@ import tv.wiinvent.wiinventsdk.ui.OverlayView
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = MainActivity.javaClass.canonicalName
-        val SAMPLE_ACCOUNT_ID = "13"
-        val SAMPLE_TOKEN = "5000"
-        val SAMPLE_CHANNEL_ID = "107578015"
-        val SAMPLE_STREAM_ID = "957"
+        val TAG = "MainActivity"
+        val SAMPLE_ACCOUNT_ID = "3"
+        val SAMPLE_TOKEN = ""
+        val SAMPLE_CHANNEL_ID = "d3ed77cf-1399-4cee-b552-63136d064576"
+        val SAMPLE_STREAM_ID = "bdf6775c-62fe-4959-bdc9-4d045b7fa2de"
     }
 
     private var exoplayerView: PlayerView? = null
@@ -157,15 +157,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeOverlays() {
         val overlayData = OverlayData.Builder()
-            .mappingType(OverlayData.MappingType.THIRDPARTY)
             .accountId(SAMPLE_ACCOUNT_ID)
             .channelId(SAMPLE_CHANNEL_ID)
             .streamId(SAMPLE_STREAM_ID)
-            .thirdPartyToken("fa9o7tvuNUUyu8piClEA0+kmAuZg4SFeEsMKMfSeCfhN7eaInptFERC6YJxdepILNJs914fZ1MIMiwDCsUQrSw%3D%3D")
-            .debug(true)
+            .thirdPartyToken(SAMPLE_TOKEN)
             .env(OverlayData.Environment.PRODUCTION)
             .deviceType(OverlayData.DeviceType.PHONE)
-                .contentType(OverlayData.ContentType.LIVESTREAM)
+            .contentType(OverlayData.ContentType.VOD)
             .build()
 
         overlayManager = OverlayManager(
@@ -174,47 +172,24 @@ class MainActivity : AppCompatActivity() {
             overlayData
         )
 
-        overlayManager?.addUserPlayerListener(object: UserActionListener{
+        overlayManager?.addUserPlayerListener(object: UserActionListener {
+            override fun onLogin() {
+                //Callback require login
+
+                Log.d(TAG, "-------------------onLogin")
+            }
+
             override fun onTokenExpire() {
+                //Token user expired
 
-                Log.d(TAG, "--------onTokenExpire----- ")
+                Log.d(TAG, "-------------------onTokenExpire")
             }
-
-            override fun onUserPurchase(userId: String, productId: String) {
-                Log.d(TAG, "--------onUserPurchase: " + productId)
-
-                overlayManager?.onUserPurchaseSuccess("41121610f8f6103481f37920bc4cb1f04cd63389", "VIETTELTV_PES")
-            }
-
-            override fun onVoted(
-                userId: String,
-                channelId: String,
-                streamId: String?,
-                entryId: String,
-                entryName: String,
-                eventName: String,
-                packageName: String,
-                numPredictSame: Int
-            ) {
-
-                Log.d(TAG, "--------onVoted")
-            }
-
         })
 
         overlayManager?.addOverlayListener(object: DefaultOverlayEventListener {
             override fun onConfigReady(config: ConfigData) {
-
-
-                this@MainActivity.runOnUiThread {
-//                    for (source in config.getStreamSources()) {
-//                        Log.d(TAG, "============onConfigReady: " + source?.url ?: "")
-//                        val mediaSource = buildMediaSource(source?.url ?: "")
-//                        exoplayer?.playWhenReady = true
-//                        exoplayer?.prepare(mediaSource)
-//
-//                    }
-                }
+                //SDK Ready
+                Log.d(TAG, "-------------------SDK Ready")
             }
 
             override fun onTimeout() {
@@ -225,17 +200,20 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "-------------------onLoadError")
             }
 
-            override fun onWebViewBrowserClose() {
-                Log.d(TAG, "-------------------onWebViewBrowserClose")
+            override fun onDisplayOverlay(isDisplay: Boolean) {
+                Log.d(TAG, "-------------------onDisplayOverlay: $isDisplay")
+            }
+        })
+
+        overlayManager?.addAdsListener(object: AdsListener {
+            override fun onSuccess() {
+                Log.d(TAG, "-------------------onLoadError")
             }
 
-            override fun onWebViewBrowserContentVisible(isVisible: Boolean) {
-
+            override fun onError(message: String) {
+                Log.d(TAG, "-------------------onError: $message")
             }
 
-            override fun onWebViewBrowserOpen() {
-                TODO("Not yet implemented")
-            }
         })
 
         // Set the player position for VOD playback.
@@ -247,14 +225,11 @@ class MainActivity : AppCompatActivity() {
         // Add player event listeners to determine overlay visibility.
         exoplayer?.addListener(object : Player.EventListener{
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-
                 Log.d(TAG, "====onPlayerStateChanged playWhenReady: $playWhenReady - $playbackState")
-
                 overlayManager?.setVisible(playWhenReady && playbackState == Player.STATE_READY)
             }
 
         })
-
     }
 
     private fun buildMediaSource(url: String) : MediaSource {
